@@ -165,13 +165,12 @@ export default function AboutSection() {
                   <Link href="/about">
                     <Button
                       variant={buttonVariant}
-                      className="group mb-8 w-full sm:w-auto"
+                      className="group mb-8 w-full sm:w-auto transition-all duration-300 relative overflow-hidden hover:shadow-lg"
                     >
-                      <span className="relative z-10">
+                      <span className="relative z-10 flex items-center justify-center">
                         Learn More About Our Journey
-                        <ArrowRight className="inline-block ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                        <ArrowRight className="inline-block ml-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
                       </span>
-                      <div className="absolute inset-0 bg-gradient-to-r from-primary to-primary/50 opacity-0 transition-opacity group-hover:opacity-100" />
                     </Button>
                   </Link>
                 </div>
