@@ -1,24 +1,40 @@
 'use client';
 
 import * as React from 'react';
-import { OTPInput, OTPInputContext } from 'input-otp';
+import { OTPInput, OTPInputContext, OTPInputProps } from 'input-otp';
 import { Dot } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
 
+interface InputOTPProps extends Omit<OTPInputProps, 'children'> {
+  maxLength: number;
+  containerClassName?: string;
+  className?: string;
+}
+
 const InputOTP = React.forwardRef<
   React.ElementRef<typeof OTPInput>,
-  React.ComponentPropsWithoutRef<typeof OTPInput>
->(({ className, containerClassName, ...props }, ref) => (
+  InputOTPProps
+>(({ className, containerClassName, maxLength, ...props }, ref) => (
   <OTPInput
     ref={ref}
+    maxLength={maxLength}
     containerClassName={cn(
       'flex items-center gap-2 has-[:disabled]:opacity-50',
       containerClassName
     )}
     className={cn('disabled:cursor-not-allowed', className)}
     {...props}
-  />
+  >
+    <InputOTPGroup>
+      {Array.from({ length: maxLength }, (_, i) => (
+        <React.Fragment key={i}>
+          <InputOTPSlot index={i} />
+          {i !== maxLength - 1 && <InputOTPSeparator />}
+        </React.Fragment>
+      ))}
+    </InputOTPGroup>
+  </OTPInput>
 ));
 InputOTP.displayName = 'InputOTP';
 
