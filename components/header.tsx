@@ -3,24 +3,31 @@
 import * as React from "react";
 import Link from "next/link";
 import type { MouseEvent } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Menu, X } from "lucide-react";
 import { ThemeToggle } from "./theme-toggle";
 import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
 
-const navigation = [
-  { name: "Home", href: "/" },
-  { name: "Services", href: "#services" },
-  { name: "Projects", href: "#projects" },
-  { name: "About", href: "#about" },
-  { name: "Contact", href: "#contact" },
+type NavItem = {
+  name: string;
+  href: string;
+  path: string;
+};
+
+const navigation: NavItem[] = [
+  { name: "Services", href: "#services", path: "/services" },
+  { name: "Projects", href: "#projects", path: "/projects" },
+  { name: "About", href: "#about", path: "/about" },
+  { name: "Contact", href: "#contact", path: "/contact" },
 ];
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = React.useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
+  const [currentHash, setCurrentHash] = React.useState("");
   const pathname = usePathname();
+  const router = useRouter();
 
   React.useEffect(() => {
     const handleScroll = () => {
@@ -31,14 +38,59 @@ export default function Header() {
       }
     };
 
+    const handleHashChange = () => {
+      setCurrentHash(window.location.hash);
+    };
+
+    // Set initial hash
+    setCurrentHash(window.location.hash);
+
+    // Add event listeners
     window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener("hashchange", handleHashChange);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("hashchange", handleHashChange);
+    };
   }, []);
 
-  const handleNavClick = (e: MouseEvent<HTMLAnchorElement>, href: string) => {
-    if (href.startsWith("#")) {
+  const handleNavClick = (e: MouseEvent<HTMLAnchorElement>, item: NavItem) => {
+    // Always handle Projects link specially
+    if (item.name === "Projects") {
       e.preventDefault();
-      const element = document.getElementById(href.substring(1));
+      if (pathname === "/") {
+        // If on home page, just scroll to projects section
+        const element = document.getElementById("projects");
+        if (element) {
+          window.scrollTo({
+            top: element.offsetTop - 80,
+            behavior: "smooth",
+          });
+        }
+      } else {
+        // If on another page, redirect to home and then scroll
+        router.push("/");
+        // Add a delay to allow for page transition before scrolling
+        setTimeout(() => {
+          const element = document.getElementById("projects");
+          if (element) {
+            window.scrollTo({
+              top: element.offsetTop - 80,
+              behavior: "smooth",
+            });
+          }
+        }, 100);
+      }
+      setMobileMenuOpen(false);
+      return;
+    }
+
+    const isHomePage = pathname === "/";
+    
+    if (isHomePage && item.href.startsWith("#")) {
+      e.preventDefault();
+      const element = document.getElementById(item.href.substring(1));
       if (element) {
         window.scrollTo({
           top: element.offsetTop - 80,
@@ -46,6 +98,25 @@ export default function Header() {
         });
         setMobileMenuOpen(false);
       }
+    } else if (!isHomePage) {
+      if (item.href.startsWith("#")) {
+        // Navigate to home page first if trying to access a section
+        router.push("/");
+        // Add a small delay to allow for page transition before scrolling
+        setTimeout(() => {
+          const element = document.getElementById(item.href.substring(1));
+          if (element) {
+            window.scrollTo({
+              top: element.offsetTop - 80,
+              behavior: "smooth",
+            });
+          }
+        }, 100);
+      } else {
+        // Direct navigation to page
+        router.push(item.path);
+      }
+      setMobileMenuOpen(false);
     }
   };
 
@@ -73,19 +144,14 @@ export default function Header() {
             {navigation.map((item) => (
               <Link
                 key={item.name}
-                href={item.href}
-                onClick={(e) => handleNavClick(e, item.href)}
+                href={pathname === "/" ? item.href : item.path}
+                onClick={(e) => handleNavClick(e, item)}
                 className={cn(
                   "relative text-sm font-medium transition-all duration-300",
                   "after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-full",
-                  "after:origin-left after:scale-x-0 after:bg-primary",
-                  "after:transition-transform after:duration-300 after:ease-out",
-                  item.href !== "/" && "hover:text-primary hover:after:scale-x-100",
-                  pathname === item.href ? (
-                    "text-primary" + (item.href !== "/" ? " after:scale-x-100" : "")
-                  ) : (
-                    "text-foreground/80"
-                  )
+                  "after:origin-left after:scale-x-0 after:transform after:bg-primary after:transition-transform after:duration-300",
+                  "hover:after:scale-x-100",
+                  pathname === item.path && !pathname.startsWith("/admin") && "text-primary after:scale-x-100"
                 )}
               >
                 {item.name}
@@ -94,65 +160,74 @@ export default function Header() {
           </div>
           <div className="flex items-center space-x-4">
             <ThemeToggle />
-            <Button className="rounded-full">Contact Us</Button>
+            <Button
+              asChild
+              className="rounded-full"
+            >
+              <Link href={pathname === "/" ? "#contact" : "/#contact"}>
+                Contact Us
+              </Link>
+            </Button>
           </div>
         </div>
 
-        {/* Mobile nav */}
+        {/* Mobile Menu Button */}
         <div className="flex items-center space-x-4 md:hidden">
           <ThemeToggle />
-          <Button
-            variant="ghost"
-            size="icon"
-            aria-label="Toggle Menu"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          <button
+            type="button"
+            className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700"
+            onClick={() => setMobileMenuOpen(true)}
           >
-            {mobileMenuOpen ? (
-              <X className="h-6 w-6" />
-            ) : (
-              <Menu className="h-6 w-6" />
-            )}
-          </Button>
+            <span className="sr-only">Open main menu</span>
+            <Menu className="h-6 w-6" aria-hidden="true" />
+          </button>
         </div>
-      </nav>
 
-      {/* Mobile menu */}
-      {mobileMenuOpen && (
-        <div className="md:hidden">
-          <div className="space-y-1 px-4 py-3 bg-background/95 backdrop-blur-sm">
-            {navigation.map((item) => (
-              <Link
-                key={item.name}
-                href={item.href}
-                onClick={(e) => handleNavClick(e, item.href)}
-                className={cn(
-                  "group block py-2 text-base font-medium",
-                  "relative overflow-hidden transition-all duration-300",
-                  "hover:pl-6 hover:text-primary",
-                  pathname === item.href ? (
-                    "text-primary pl-6"
-                  ) : (
-                    "text-foreground/80"
-                  )
-                )}
-              >
-                <span className="relative z-10 transition-transform duration-300 group-hover:translate-x-2">
-                  {item.name}
-                </span>
-                <span className={cn(
-                  "absolute left-0 top-1/2 h-[2px] w-4",
-                  "transform -translate-y-1/2 bg-primary transition-all duration-300",
-                  "opacity-0 group-hover:opacity-100",
-                  pathname === item.href ? "opacity-100" : ""
-                )} />
-              </Link>
-            ))}
-            <div className="pt-4">
-              <Button className="w-full rounded-full">Contact Us</Button>
+        {/* Mobile menu */}
+        <div
+          className={cn(
+            "fixed inset-y-0 right-0 z-50 w-full bg-background px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10 transform transition-transform duration-300 ease-in-out",
+            mobileMenuOpen ? "translate-x-0" : "translate-x-full"
+          )}
+        >
+          <div className="flex items-center justify-between">
+            <Link href="/" className="-m-1.5 p-1.5" onClick={() => setMobileMenuOpen(false)}>
+              <span className="text-2xl font-bold">Codemates LTD</span>
+            </Link>
+            <button
+              type="button"
+              className="-m-2.5 rounded-md p-2.5 text-gray-700"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              <span className="sr-only">Close menu</span>
+              <X className="h-6 w-6" aria-hidden="true" />
+            </button>
+          </div>
+          <div className="mt-6 flow-root">
+            <div className="-my-6 divide-y divide-gray-500/10">
+              <div className="space-y-2 py-6">
+                {navigation.map((item) => (
+                  <Link
+                    key={item.name}
+                    href={pathname === "/" ? item.href : item.path}
+                    onClick={(e) => handleNavClick(e, item)}
+                    className={cn(
+                      "-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 transition-colors duration-300",
+                      ((pathname === "/" && currentHash === item.href) || 
+                       pathname === item.path)
+                        ? "text-primary bg-primary/10"
+                        : "hover:bg-muted"
+                    )}
+                  >
+                    {item.name}
+                  </Link>
+                ))}
+              </div>
             </div>
           </div>
         </div>
-      )}
+      </nav>
     </header>
   );
 }
