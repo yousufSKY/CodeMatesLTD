@@ -108,138 +108,141 @@ export default function TeamSection() {
 
 	return (
 		<section
+			id="team"
 			ref={sectionRef}
-			className="py-24 bg-background relative overflow-hidden"
+			className="py-24 w-full"
 		>
-			{/* Background decoration */}
-			<div className="absolute inset-0 bg-grid-white/5 [mask-image:radial-gradient(white,transparent_70%)] pointer-events-none" />
+			<div className="container mx-auto px-4 md:px-6 max-w-7xl">
+				{/* Background decoration */}
+				<div className="absolute inset-0 bg-grid-white/5 [mask-image:radial-gradient(white,transparent_70%)] pointer-events-none" />
 
-			<div className="container px-4 md:px-6 relative">
-				<motion.div
-					initial={{ opacity: 0, y: 20 }}
-					animate={
-						isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }
-					}
-					transition={{ duration: 0.5 }}
-					className="text-center mb-16"
-				>
-					<h2 className="text-3xl md:text-4xl font-bold mb-4">
-						Meet Our Team
-					</h2>
-					<p className="text-muted-foreground text-lg max-w-3xl mx-auto">
-						Our diverse team of experts brings together years of experience in
-						software development, design, and innovation to deliver exceptional
-						results for our clients.
-					</p>
-				</motion.div>
+				<div className="relative">
+					<motion.div
+						initial={{ opacity: 0, y: 20 }}
+						animate={
+							isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }
+						}
+						transition={{ duration: 0.5 }}
+						className="text-center mb-16"
+					>
+						<h2 className="text-3xl md:text-4xl font-bold mb-4">
+							Meet Our Team
+						</h2>
+						<p className="text-muted-foreground text-lg max-w-3xl mx-auto">
+							Our diverse team of experts brings together years of experience in
+							software development, design, and innovation to deliver exceptional
+							results for our clients.
+						</p>
+					</motion.div>
 
-				<Carousel
-					opts={{
-						align: "center",
-						loop: true,
-						dragFree: true
-					}}
-					setApi={setApi}
-					className="w-full max-w-6xl mx-auto"
-				>
-					<CarouselContent className="-ml-2 md:-ml-4">
-						{teamMembers.map((member, index) => (
-							<CarouselItem key={member.name} className="pl-2 md:pl-4 basis-full sm:basis-1/2 lg:basis-1/3">
-								<motion.div
-									initial={{ opacity: 0, y: 20 }}
-									animate={
-										isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }
-									}
-									transition={{ duration: 0.5, delay: index * 0.1 }}
-									className="group text-center relative"
-								>
-									{/* Circular avatar frame with rotating gradient border */}
-									<div className="relative mb-8 mx-auto w-36 h-36">
-										{/* Outer rotating gradient ring */}
-										<div
-											className={cn(
-												"absolute inset-0 rounded-full bg-gradient-to-r opacity-75 group-hover:opacity-100 transition-opacity duration-500",
-												getGradient(index),
-												"animate-[spin_4s_linear_infinite] group-hover:animate-[spin_2s_linear_infinite]"
-											)}
-										/>
+					<Carousel
+						opts={{
+							align: "center",
+							loop: true,
+							dragFree: true
+						}}
+						setApi={setApi}
+						className="w-full max-w-6xl mx-auto"
+					>
+						<CarouselContent className="-ml-2 md:-ml-4">
+							{teamMembers.map((member, index) => (
+								<CarouselItem key={member.name} className="pl-2 md:pl-4 basis-full sm:basis-1/2 lg:basis-1/3">
+									<motion.div
+										initial={{ opacity: 0, y: 20 }}
+										animate={
+											isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }
+										}
+										transition={{ duration: 0.5, delay: index * 0.1 }}
+										className="group text-center relative"
+									>
+										{/* Circular avatar frame with rotating gradient border */}
+										<div className="relative mb-8 mx-auto w-36 h-36">
+											{/* Outer rotating gradient ring */}
+											<div
+												className={cn(
+													"absolute inset-0 rounded-full bg-gradient-to-r opacity-75 group-hover:opacity-100 transition-opacity duration-500",
+													getGradient(index),
+													"animate-[spin_4s_linear_infinite] group-hover:animate-[spin_2s_linear_infinite]"
+												)}
+											/>
 
-										{/* Inner background */}
-										<div className="absolute inset-[3px] rounded-full bg-background" />
+											{/* Inner background */}
+											<div className="absolute inset-[3px] rounded-full bg-background" />
 
-										{/* Main content */}
-										<div className="absolute inset-[4px] rounded-full bg-gradient-to-r from-background to-background/80 
-											flex items-center justify-center transform group-hover:scale-105 transition-transform duration-500">
-											<Avatar className="h-24 w-24 ring-2 ring-background shadow-lg">
-												<AvatarFallback className="text-2xl font-bold bg-gradient-to-br from-primary/80 to-primary text-background">
-													{member.avatar}
-												</AvatarFallback>
-											</Avatar>
+											{/* Main content */}
+											<div className="absolute inset-[4px] rounded-full bg-gradient-to-r from-background to-background/80 
+												flex items-center justify-center transform group-hover:scale-105 transition-transform duration-500">
+												<Avatar className="h-24 w-24 ring-2 ring-background shadow-lg">
+													<AvatarFallback className="text-2xl font-bold bg-gradient-to-br from-primary/80 to-primary text-background">
+														{member.avatar}
+													</AvatarFallback>
+												</Avatar>
+											</div>
 										</div>
-									</div>
 
-									{/* Content with glass effect */}
-									<div className={cn(
-										"relative space-y-3 p-4 rounded-xl backdrop-blur-sm",
-										"bg-gradient-to-b from-background/95 to-background/50",
-										"shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]",
-										"transform group-hover:-translate-y-2 transition-transform duration-500"
-									)}>
-										<motion.h3
-											className="font-semibold text-lg"
-											initial={{ opacity: 0 }}
-											animate={{ opacity: 1 }}
-											transition={{ delay: 0.2 }}
-										>
-											{member.name}
-										</motion.h3>
-										<motion.p
-											className="text-primary font-medium"
-											initial={{ opacity: 0 }}
-											animate={{ opacity: 1 }}
-											transition={{ delay: 0.3 }}
-										>
-											{member.role}
-										</motion.p>
-										<motion.p
-											className="text-sm text-muted-foreground/80 leading-relaxed"
-											initial={{ opacity: 0 }}
-											animate={{ opacity: 1 }}
-											transition={{ delay: 0.4 }}
-										>
-											{member.bio}
-										</motion.p>
-										<motion.div
-											className="flex justify-center gap-4 pt-3"
-											initial={{ opacity: 0 }}
-											animate={{ opacity: 1 }}
-											transition={{ delay: 0.5 }}
-										>
-											{/* Social links with hover effects */}											<Link
-												href={member.social.linkedin}
-												target="_blank"
-												rel="noopener noreferrer"
-												className="text-muted-foreground/60 hover:text-primary hover:scale-110 transform transition-all duration-300"
-												title={`Connect with ${member.name} on LinkedIn`}
+										{/* Content with glass effect */}
+										<div className={cn(
+											"relative space-y-3 p-4 rounded-xl backdrop-blur-sm",
+											"bg-gradient-to-b from-background/95 to-background/50",
+											"shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]",
+											"transform group-hover:-translate-y-2 transition-transform duration-500"
+										)}>
+											<motion.h3
+												className="font-semibold text-lg"
+												initial={{ opacity: 0 }}
+												animate={{ opacity: 1 }}
+												transition={{ delay: 0.2 }}
 											>
-												<Linkedin className="h-5 w-5" />
-											</Link>
-											<Link
-												href={`mailto:${member.social.email}`}
-												className="text-muted-foreground/60 hover:text-primary hover:scale-110 transform transition-all duration-300"
-												title={`Email ${member.name}`}
+												{member.name}
+											</motion.h3>
+											<motion.p
+												className="text-primary font-medium"
+												initial={{ opacity: 0 }}
+												animate={{ opacity: 1 }}
+												transition={{ delay: 0.3 }}
 											>
-												<Mail className="h-5 w-5" />
-											</Link>
-										</motion.div>
-									</div>
-								</motion.div>
-							</CarouselItem>
-						))}
-					</CarouselContent>
-					<CarouselPrevious className="hidden md:flex -left-12" />
-					<CarouselNext className="hidden md:flex -right-12" />
-				</Carousel>
+												{member.role}
+											</motion.p>
+											<motion.p
+												className="text-sm text-muted-foreground/80 leading-relaxed"
+												initial={{ opacity: 0 }}
+												animate={{ opacity: 1 }}
+												transition={{ delay: 0.4 }}
+											>
+												{member.bio}
+											</motion.p>
+											<motion.div
+												className="flex justify-center gap-4 pt-3"
+												initial={{ opacity: 0 }}
+												animate={{ opacity: 1 }}
+												transition={{ delay: 0.5 }}
+											>
+												{/* Social links with hover effects */}											<Link
+													href={member.social.linkedin}
+													target="_blank"
+													rel="noopener noreferrer"
+													className="text-muted-foreground/60 hover:text-primary hover:scale-110 transform transition-all duration-300"
+													title={`Connect with ${member.name} on LinkedIn`}
+												>
+													<Linkedin className="h-5 w-5" />
+												</Link>
+												<Link
+													href={`mailto:${member.social.email}`}
+													className="text-muted-foreground/60 hover:text-primary hover:scale-110 transform transition-all duration-300"
+													title={`Email ${member.name}`}
+												>
+													<Mail className="h-5 w-5" />
+												</Link>
+											</motion.div>
+										</div>
+									</motion.div>
+								</CarouselItem>
+							))}
+						</CarouselContent>
+						<CarouselPrevious className="hidden md:flex -left-12" />
+						<CarouselNext className="hidden md:flex -right-12" />
+					</Carousel>
+				</div>
 			</div>
 		</section>
 	);

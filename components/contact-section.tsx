@@ -137,64 +137,24 @@ export default function ContactSection() {
   ];
 
   return (
-    <section id="contact" ref={sectionRef} className="py-12 sm:py-16 lg:py-24">
-      <div className="container px-4 md:px-6">
-        <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-12 lg:mb-16">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4">Get in Touch</h2>
-          <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto px-2">
-            Have a project in mind or want to learn more about our services? We'd love to hear from you.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-16">
-          <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
-            transition={{ duration: 0.5 }}
-            className="space-y-6 sm:space-y-8"
-          >
-            <div className="space-y-4 sm:space-y-6">
-              {contactInfo.map((item, index) => (
-                <a
-                  key={index}
-                  href={item.href}
-                  className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-lg border border-border transition-all duration-300 hover:bg-muted/50 hover:-translate-y-1"
-                >
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                    <item.icon className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
-                  </div>
-                  <div>
-                    <p className="text-xs sm:text-sm text-muted-foreground">{item.label}</p>
-                    <p className="text-sm sm:text-base font-medium">{item.value}</p>
-                  </div>
-                </a>
-              ))}
-            </div>
-
-            <div className="space-y-3 sm:space-y-4">
-              <h3 className="text-lg sm:text-xl font-semibold">Connect With Us</h3>
-              <div className="flex gap-3 sm:gap-4">
-                {socialLinks.map((link, index) => (
-                  <a
-                    key={index}
-                    href={link.href}
-                    aria-label={link.label}
-                    className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-muted flex items-center justify-center hover:bg-primary/10 transition-all duration-300 hover:-translate-y-1"
-                  >
-                    <link.icon className="h-4 w-4 sm:h-5 sm:w-5" />
-                  </a>
-                ))}
+    <section id="contact" ref={sectionRef} className="w-full py-24 bg-muted/30">
+      <div className="container mx-auto px-4 md:px-6 max-w-7xl">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 md:gap-12">
+          {/* Contact Form */}
+          <div className="lg:col-span-2">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+              transition={{ duration: 0.5 }}
+              className="space-y-8"
+            >
+              <div>
+                <h2 className="text-3xl md:text-4xl font-bold mb-4">Get in Touch</h2>
+                <p className="text-lg text-muted-foreground">
+                  Have a project in mind? We'd love to hear about it.
+                </p>
               </div>
-            </div>
-          </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-          >
-            <div className="bg-card border border-border rounded-lg p-4 sm:p-6 md:p-8 shadow-sm">
-              <h3 className="text-lg sm:text-xl font-semibold mb-4 sm:mb-6">Send us a message</h3>
               <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 sm:space-y-6">
                   <FormField
@@ -297,9 +257,57 @@ export default function ContactSection() {
                   </Button>
                 </form>
               </Form>
+            </motion.div>
+          </div>
+
+          {/* Contact Information */}
+          <motion.div
+            initial={{ opacity: 0, x: 50 }}
+            animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 50 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="space-y-8"
+          >
+            <div className="space-y-6">
+              {contactInfo.map((item, index) => (
+                <a
+                  key={index}
+                  href={item.href}
+                  className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-lg border border-border transition-all duration-300 hover:bg-muted/50 hover:-translate-y-1"
+                >
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                    <item.icon className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
+                  </div>
+                  <div>
+                    <p className="text-xs sm:text-sm text-muted-foreground">{item.label}</p>
+                    <p className="text-sm sm:text-base font-medium">{item.value}</p>
+                  </div>
+                </a>
+              ))}
             </div>
           </motion.div>
         </div>
+
+        {/* Social Links */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+          className="mt-16 text-center"
+        >
+          <h3 className="text-lg sm:text-xl font-semibold mb-4">Connect With Us</h3>
+          <div className="flex gap-3 sm:gap-4 justify-center">
+            {socialLinks.map((link, index) => (
+              <a
+                key={index}
+                href={link.href}
+                aria-label={link.label}
+                className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-muted flex items-center justify-center hover:bg-primary/10 transition-all duration-300 hover:-translate-y-1"
+              >
+                <link.icon className="h-4 w-4 sm:h-5 sm:w-5" />
+              </a>
+            ))}
+          </div>
+        </motion.div>
       </div>
     </section>
   );

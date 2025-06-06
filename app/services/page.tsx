@@ -126,15 +126,15 @@ export default function ServicesPage() {
 	const isInView = useInView(sectionRef, { once: true, amount: 0.2 });
 
 	return (
-		<main className="flex-1" ref={sectionRef}>
+		<main className="flex-1 w-full min-h-screen overflow-x-hidden" ref={sectionRef}>
 			{/* Hero Section */}
-			<section className="relative py-24 overflow-hidden">
+			<section className="relative py-12 md:py-24 w-full">
 				<div className="absolute inset-0 bg-gradient-to-b from-background via-background/90 to-background" />
 				<div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:24px_24px]" />
 
-				<div className="container relative z-10 px-4 md:px-6">
+				<div className="container relative z-10 mx-auto px-4 md:px-6 max-w-7xl">
 					<Link href="/#services">
-						<Button variant="ghost" className="group mb-8">
+						<Button variant="ghost" className="group mb-6 md:mb-8">
 							<ArrowLeft className="w-4 h-4 mr-2 transition-transform group-hover:-translate-x-1" />
 							Back to Home
 						</Button>
@@ -142,7 +142,7 @@ export default function ServicesPage() {
 
 					<div className="max-w-3xl">
 						<motion.h1
-							className="text-4xl md:text-5xl font-bold mb-6"
+							className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6"
 							initial={{ opacity: 0, y: 20 }}
 							animate={
 								isInView
@@ -154,7 +154,7 @@ export default function ServicesPage() {
 							Our Services
 						</motion.h1>
 						<motion.p
-							className="text-xl text-muted-foreground"
+							className="text-lg md:text-xl text-muted-foreground"
 							initial={{ opacity: 0, y: 20 }}
 							animate={
 								isInView
@@ -171,9 +171,9 @@ export default function ServicesPage() {
 			</section>
 
 			{/* Services Grid */}
-			<section className="py-24 bg-muted/30">
-				<div className="container px-4 md:px-6">
-					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+			<section className="py-12 md:py-24 bg-muted/30 w-full">
+				<div className="container mx-auto px-4 md:px-6 max-w-7xl">
+					<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
 						{services.map((service, index) => (
 							<motion.div
 								key={service.name}
@@ -184,12 +184,14 @@ export default function ServicesPage() {
 										: { opacity: 0, y: 20 }
 								}
 								transition={{ duration: 0.5, delay: index * 0.1 }}
+								className="w-full"
+								style={{ willChange: 'opacity, transform' }}
 							>
-								<Card className={cn("h-full", service.isCustom && "bg-primary/5 border-primary")}>
-									<div className="p-6 flex flex-col h-full">
-										<div className="flex-grow space-y-4">
+								<Card className={cn("h-full flex flex-col", service.isCustom && "bg-primary/5 border-primary")}>
+									<div className="p-4 md:p-6 flex flex-col flex-grow">
+										<div className="flex-grow space-y-3 md:space-y-4">
 											<div className="flex items-center justify-between">
-												<h3 className="text-xl font-semibold">
+												<h3 className="text-lg md:text-xl font-semibold">
 													{service.name}
 												</h3>
 												{service.isCustom && (
@@ -198,28 +200,28 @@ export default function ServicesPage() {
 													</Badge>
 												)}
 											</div>
-											<p className="text-muted-foreground">
+											<p className="text-sm md:text-base text-muted-foreground">
 												{service.description}
 											</p>
 
 											{/* Price Range */}
 											{!service.isCustom ? (
-												<div className="pt-4 border-t">
+												<div className="pt-3 md:pt-4 border-t">
 													<div className="flex items-center space-x-2">
-														<DollarSign className="h-5 w-5 text-primary" />
-														<span className="font-semibold text-lg">
+														<DollarSign className="h-4 w-4 md:h-5 md:w-5 text-primary" />
+														<span className="font-semibold text-base md:text-lg">
 															${service.price.min.toLocaleString()} – $
 															{service.price.max.toLocaleString()}
 														</span>
 													</div>
-													<p className="text-sm text-muted-foreground mt-1">
+													<p className="text-xs md:text-sm text-muted-foreground mt-1">
 														Starting price range
 													</p>
 												</div>
 											) : (
-												<div className="pt-4 border-t">
+												<div className="pt-3 md:pt-4 border-t">
 													<div className="flex items-center space-x-2">
-														<span className="font-semibold text-lg">
+														<span className="font-semibold text-base md:text-lg">
 															Contact for Custom Pricing
 														</span>
 													</div>
@@ -227,28 +229,29 @@ export default function ServicesPage() {
 											)}
 
 											{/* Features */}
-											<ul className="space-y-2 pt-4">
+											<ul className="space-y-2 pt-3 md:pt-4">
 												{service.features.map((feature) => (
 													<li key={feature} className="flex items-start">
-														<Check className="h-5 w-5 text-primary shrink-0 mr-2" />
-														<span className="text-sm">{feature}</span>
+														<Check className="h-4 w-4 md:h-5 md:w-5 text-primary shrink-0 mr-2" />
+														<span className="text-xs md:text-sm">{feature}</span>
 													</li>
 												))}
 											</ul>
 										</div>
 
 										{/* CTA Button */}
-										<div className="pt-6 mt-auto">
+										<div className="pt-4 md:pt-6 mt-auto">
 											<Button 
 												asChild 
+												size="sm"
 												className={cn(
-													"w-full group",
+													"w-full group text-sm md:text-base",
 													service.isCustom && "bg-primary hover:bg-primary/90"
 												)}
 											>
 												<Link href="/#contact">
 													{service.isCustom ? "Request Custom Service" : "Get Started"}
-													<ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+													<ArrowRight className="ml-2 h-3 w-3 md:h-4 md:w-4 transition-transform group-hover:translate-x-1" />
 												</Link>
 											</Button>
 										</div>
@@ -261,15 +264,15 @@ export default function ServicesPage() {
 			</section>
 
 			{/* Why Choose Us Section */}
-			<section className="py-24">
-				<div className="container px-4 md:px-6">
-					<div className="text-center mb-12">
-						<h2 className="text-3xl font-bold mb-4">Why Choose Us</h2>
-						<p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+			<section className="py-12 md:py-24 w-full">
+				<div className="container mx-auto px-4 md:px-6 max-w-7xl">
+					<div className="text-center mb-8 md:mb-12">
+						<h2 className="text-2xl md:text-3xl font-bold mb-3 md:mb-4">Why Choose Us</h2>
+						<p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
 							We deliver exceptional solutions with a focus on quality, innovation, and client satisfaction
 						</p>
 					</div>
-					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
 						<motion.div
 							initial={{ opacity: 0, y: 20 }}
 							animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
@@ -353,11 +356,11 @@ export default function ServicesPage() {
 			</section>
 
 			{/* Our Process Section */}
-			<section className="py-24 bg-muted/30">
-				<div className="container px-4 md:px-6">
-					<div className="text-center mb-12">
-						<h2 className="text-3xl font-bold mb-4">Our Process</h2>
-						<p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+			<section className="py-12 md:py-24 bg-muted/30 w-full">
+				<div className="container mx-auto px-4 md:px-6 max-w-7xl">
+					<div className="text-center mb-8 md:mb-12">
+						<h2 className="text-2xl md:text-3xl font-bold mb-3 md:mb-4">Our Process</h2>
+						<p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
 							We follow a systematic approach to ensure the success of your project
 						</p>
 					</div>
@@ -464,17 +467,17 @@ export default function ServicesPage() {
 			</section>
 
 			{/* CTA Section */}
-			<section className="py-24">
-				<div className="container px-4 md:px-6">
+			<section className="py-12 md:py-24 w-full">
+				<div className="container mx-auto px-4 md:px-6 max-w-7xl">
 					<div className="max-w-3xl mx-auto text-center">
-						<h2 className="text-3xl font-bold mb-4">
+						<h2 className="text-2xl md:text-3xl font-bold mb-3 md:mb-4">
 							Ready to Transform Your Business?
 						</h2>
-						<p className="text-muted-foreground text-lg mb-8">
+						<p className="text-base md:text-lg text-muted-foreground mb-6 md:mb-8">
 							Get in touch with us to discuss your project requirements and
 							receive a detailed quote.
 						</p>
-						<Button asChild size="lg" className="rounded-full">
+						<Button asChild size="lg" className="rounded-full text-sm md:text-base">
 							<Link href="/#contact">Contact Us</Link>
 						</Button>
 					</div>

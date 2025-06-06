@@ -51,7 +51,7 @@ export default function HeroSection() {
             </div>
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight">
               <span className="block text-balance">Codemates LTD</span>
-              <span className="block bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent mt-2">
+              <span className="block bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent mt-2 leading-[1.2]">
                 Code, Analyze, Deploy
               </span>
             </h1>

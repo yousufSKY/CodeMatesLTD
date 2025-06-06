@@ -11,15 +11,14 @@ import { cn } from "@/lib/utils";
 
 type NavItem = {
   name: string;
-  href: string;
   path: string;
 };
 
 const navigation: NavItem[] = [
-  { name: "Services", href: "#services", path: "/services" },
-  { name: "Projects", href: "#projects", path: "/projects" },
-  { name: "About", href: "#about", path: "/about" },
-  { name: "Contact", href: "#contact", path: "/contact" },
+  { name: "Services", path: "/services" },
+  { name: "Projects", path: "/projects" },
+  { name: "About", path: "/about" },
+  { name: "Contact", path: "/contact" },
 ];
 
 export default function Header() {
@@ -56,41 +55,21 @@ export default function Header() {
   }, []);
 
   const handleNavClick = (e: MouseEvent<HTMLAnchorElement>, item: NavItem) => {
-    // Always handle Projects link specially
-    if (item.name === "Projects") {
+    // For non-hash paths (like /projects, /about), do direct navigation
+    if (!item.path.startsWith("#")) {
       e.preventDefault();
-      if (pathname === "/") {
-        // If on home page, just scroll to projects section
-        const element = document.getElementById("projects");
-        if (element) {
-          window.scrollTo({
-            top: element.offsetTop - 80,
-            behavior: "smooth",
-          });
-        }
-      } else {
-        // If on another page, redirect to home and then scroll
-        router.push("/");
-        // Add a delay to allow for page transition before scrolling
-        setTimeout(() => {
-          const element = document.getElementById("projects");
-          if (element) {
-            window.scrollTo({
-              top: element.offsetTop - 80,
-              behavior: "smooth",
-            });
-          }
-        }, 100);
-      }
+      router.push(item.path);
       setMobileMenuOpen(false);
       return;
     }
 
+    // Handle hash navigation (e.g., #contact)
     const isHomePage = pathname === "/";
+    e.preventDefault();
     
-    if (isHomePage && item.href.startsWith("#")) {
-      e.preventDefault();
-      const element = document.getElementById(item.href.substring(1));
+    if (isHomePage) {
+      // If on home page, scroll to section
+      const element = document.getElementById(item.path.substring(1));
       if (element) {
         window.scrollTo({
           top: element.offsetTop - 80,
@@ -98,24 +77,18 @@ export default function Header() {
         });
         setMobileMenuOpen(false);
       }
-    } else if (!isHomePage) {
-      if (item.href.startsWith("#")) {
-        // Navigate to home page first if trying to access a section
-        router.push("/");
-        // Add a small delay to allow for page transition before scrolling
-        setTimeout(() => {
-          const element = document.getElementById(item.href.substring(1));
-          if (element) {
-            window.scrollTo({
-              top: element.offsetTop - 80,
-              behavior: "smooth",
-            });
-          }
-        }, 100);
-      } else {
-        // Direct navigation to page
-        router.push(item.path);
-      }
+    } else {
+      // If on another page, navigate to home first then scroll
+      router.push("/");
+      setTimeout(() => {
+        const element = document.getElementById(item.path.substring(1));
+        if (element) {
+          window.scrollTo({
+            top: element.offsetTop - 80,
+            behavior: "smooth",
+          });
+        }
+      }, 100);
       setMobileMenuOpen(false);
     }
   };
@@ -144,7 +117,7 @@ export default function Header() {
             {navigation.map((item) => (
               <Link
                 key={item.name}
-                href={pathname === "/" ? item.href : item.path}
+                href={pathname === "/" ? item.path : item.path}
                 onClick={(e) => handleNavClick(e, item)}
                 className={cn(
                   "relative text-sm font-medium transition-all duration-300",
@@ -210,11 +183,11 @@ export default function Header() {
                 {navigation.map((item) => (
                   <Link
                     key={item.name}
-                    href={pathname === "/" ? item.href : item.path}
+                    href={pathname === "/" ? item.path : item.path}
                     onClick={(e) => handleNavClick(e, item)}
                     className={cn(
                       "-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 transition-colors duration-300",
-                      ((pathname === "/" && currentHash === item.href) || 
+                      ((pathname === "/" && currentHash === item.path) || 
                        pathname === item.path)
                         ? "text-primary bg-primary/10"
                         : "hover:bg-muted"

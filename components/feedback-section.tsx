@@ -37,7 +37,7 @@ export default function FeedbackSection() {
   };
 
   return (
-    <section ref={sectionRef} className="py-24 bg-muted/30 relative overflow-hidden">
+    <section ref={sectionRef} className="py-24 bg-muted/30 relative overflow-hidden w-full">
       {/* Background decoration */}
       <div className="absolute inset-0 bg-grid-white/5 [mask-image:radial-gradient(white,transparent_70%)] pointer-events-none" />
 
@@ -49,7 +49,7 @@ export default function FeedbackSection() {
         <Quote size={120} />
       </div>
 
-      <div className="container px-4 md:px-6 relative">
+      <div className="container mx-auto px-4 md:px-6 max-w-7xl relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}

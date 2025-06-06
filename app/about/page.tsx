@@ -60,11 +60,15 @@ const values = [
 		title: "Growth",
 		description: "Continuously evolving and improving",
 		icon: ChartBar,
-	},
-	{
+	},	{
 		title: "Client Focus",
 		description: "Putting our clients' success first",
 		icon: Target,
+	},
+	{
+		title: "Quality Assurance",
+		description: "Ensuring the highest standards in every delivery",
+		icon: ChartBar,
 	},
 ];
 
@@ -72,32 +76,16 @@ export default function AboutPage() {
 	const sectionRef = useRef<HTMLElement>(null);
 	const isInView = useInView(sectionRef, { once: true, amount: 0.2 });
 
-	return (
-		<main className="flex-1" ref={sectionRef}>
-			{/* Hero Section */}
-			<section className="relative py-12 md:py-24 overflow-hidden">
+	return (		<main className="flex-1 min-h-screen pt-24" ref={sectionRef}>
+			{/* Hero Section */}<section className="relative py-12 md:py-24 overflow-hidden">
 				{/* Gradient background */}
 				<div className="absolute inset-0 bg-gradient-to-b from-background via-background/90 to-background" />
 
 				{/* Background pattern */}
-				<div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:24px_24px]" />				<div className="container relative z-10 px-4 md:px-6">
-					<Button 
-						variant="ghost" 
-						className="group mb-4 md:mb-8 w-full sm:w-auto"
-						asChild
-					>
-						<Link 
-							href="/#about"
-							className="flex items-center justify-center sm:justify-start w-full py-2"
-						>
-							<ArrowLeft className="w-5 h-5 sm:w-4 sm:h-4 mr-2 transition-transform group-hover:-translate-x-1" />
-							Back to Home
-						</Link>
-					</Button>
-
-					<div className="max-w-3xl">
+				<div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:24px_24px]" />				<div className="container relative z-10 px-4 md:px-6 mx-auto flex flex-col items-center">
+					<div className="max-w-5xl mx-auto text-center">
 						<motion.h1
-							className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 md:mb-6"
+							className="text-4xl sm:text-5xl md:text-6xl font-bold mb-8 md:mb-10 bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent leading-tight pb-2"
 							initial={{ opacity: 0, y: 20 }}
 							animate={
 								isInView
@@ -106,29 +94,63 @@ export default function AboutPage() {
 							}
 							transition={{ duration: 0.5 }}
 						>
-							Our Story
+							Our Story: Innovating Through Technology
 						</motion.h1>
-						<motion.p
-							className="text-lg sm:text-xl text-muted-foreground"
-							initial={{ opacity: 0, y: 20 }}
-							animate={
-								isInView
-									? { opacity: 1, y: 0 }
-									: { opacity: 0, y: 20 }
-							}
-							transition={{ duration: 0.5, delay: 0.1 }}
-						>
-							We are a team of passionate technologists dedicated to transforming
-							businesses through innovative solutions. Our journey is driven by the
-							pursuit of excellence and the desire to make a lasting impact.
-						</motion.p>
+						<div className="space-y-6">
+							<motion.p
+								className="text-lg sm:text-xl text-muted-foreground"
+								initial={{ opacity: 0, y: 20 }}
+								animate={
+									isInView
+										? { opacity: 1, y: 0 }
+										: { opacity: 0, y: 20 }
+								}
+								transition={{ duration: 0.5, delay: 0.1 }}
+							>
+								Founded in 2024, Codemates LTD emerged from a shared vision to bridge the gap between innovative technology and business success. We are more than just a technology company; we are partners in our clients' digital transformation journeys.
+							</motion.p>
+							<motion.p
+								className="text-lg sm:text-xl text-muted-foreground"
+								initial={{ opacity: 0, y: 20 }}
+								animate={
+									isInView
+										? { opacity: 1, y: 0 }
+										: { opacity: 0, y: 20 }
+								}
+								transition={{ duration: 0.5, delay: 0.2 }}
+							>
+								Our team of passionate technologists brings together diverse expertise in software development, design, and data science. We believe in the power of technology to transform businesses and create lasting impact in an ever-evolving digital landscape.
+							</motion.p>
+							<motion.div
+								className="flex flex-wrap justify-center gap-4 mt-8"
+								initial={{ opacity: 0, y: 20 }}
+								animate={
+									isInView
+										? { opacity: 1, y: 0 }
+										: { opacity: 0, y: 20 }
+								}
+								transition={{ duration: 0.5, delay: 0.3 }}
+							>
+								<div className="flex items-center gap-2 text-lg font-semibold">
+									<Users className="w-6 h-6 text-primary" />
+									<span>10+ Expert Team Members</span>
+								</div>
+								<div className="flex items-center gap-2 text-lg font-semibold">
+									<Briefcase className="w-6 h-6 text-primary" />
+									<span>20+ Successful Projects</span>
+								</div>
+								<div className="flex items-center gap-2 text-lg font-semibold">
+									<Award className="w-6 h-6 text-primary" />
+									<span>100% Client Satisfaction</span>
+								</div>
+							</motion.div>
+						</div>
 					</div>
 				</div>
 			</section>
 
-			{/* Company Journey */}
-			<section className="py-12 md:py-24 bg-muted/30">
-				<div className="container px-4 md:px-6">
+			{/* Company Journey */}			<section className="py-12 md:py-24 bg-muted/30">
+				<div className="container px-4 md:px-6 mx-auto flex flex-col items-center">
 					<motion.div
 						className="max-w-3xl mx-auto text-center mb-8 md:mb-16"
 						initial={{ opacity: 0, y: 20 }}
@@ -211,9 +233,8 @@ export default function AboutPage() {
 				</div>
 			</section>
 
-			{/* Our Values */}
-			<section className="py-12 md:py-24">
-				<div className="container px-4 md:px-6">
+			{/* Our Values */}			<section className="py-12 md:py-24">
+				<div className="container px-4 md:px-6 mx-auto flex flex-col items-center">
 					<motion.div
 						className="max-w-3xl mx-auto text-center mb-8 md:mb-16"
 						initial={{ opacity: 0, y: 20 }}
@@ -231,9 +252,7 @@ export default function AboutPage() {
 							These core values guide everything we do and shape how we work with
 							our clients and each other.
 						</p>
-					</motion.div>
-
-					<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8 max-w-5xl mx-auto">
+					</motion.div>					<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8 max-w-6xl mx-auto">
 						{values.map((value, index) => (
 							<motion.div
 								key={value.title}
@@ -262,10 +281,9 @@ export default function AboutPage() {
 				</div>
 			</section>
 
-			{/* Team Culture */}
-			<section className="py-12 md:py-24 bg-muted/30">
-				<div className="container px-4 md:px-6">
-					<div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-center">
+			{/* Team Culture */}			<section className="py-12 md:py-24 bg-muted/30">
+				<div className="container px-4 md:px-6 mx-auto">
+					<div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-center max-w-7xl mx-auto">
 						<motion.div
 							initial={{ opacity: 0, x: -50 }}
 							animate={

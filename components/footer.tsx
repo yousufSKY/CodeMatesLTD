@@ -10,8 +10,8 @@ export default function Footer() {
   };
 
   return (
-    <footer className="bg-muted/50 py-12 mt-20">
-      <div className="container mx-auto px-4">
+    <footer className="bg-muted/50 py-12 mt-20 w-full">
+      <div className="container mx-auto px-4 md:px-6 max-w-7xl">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="md:col-span-2">
             <Link href="/" className="text-2xl font-bold bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">
@@ -21,19 +21,36 @@ export default function Footer() {
               We deliver scalable and cutting-edge digital solutions that help businesses thrive in the digital age.
             </p>
             <div className="flex mt-6 space-x-4">
-              <Link href="https://twitter.com" className="text-muted-foreground hover:text-primary transition-colors">
+              <Link 
+                href="https://x.com/codematesltd?t=cjXqpZcgoW9BV3Q7TNQUGg&s=09" 
+                className="text-muted-foreground hover:text-primary transition-colors"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <Twitter className="h-5 w-5" />
               </Link>
-              <Link href="https://facebook.com" className="text-muted-foreground hover:text-primary transition-colors">
+              <Link 
+                href="https://facebook.com" 
+                className="text-muted-foreground hover:text-primary transition-colors"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <Facebook className="h-5 w-5" />
               </Link>
-              <Link href="https://instagram.com" className="text-muted-foreground hover:text-primary transition-colors">
+              <Link 
+                href="https://www.instagram.com/codematesltd/profilecard/?igsh=MTNvb25iYWtiYzZjZA==" 
+                className="text-muted-foreground hover:text-primary transition-colors"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <Instagram className="h-5 w-5" />
               </Link>
-              <Link href="https://github.com" className="text-muted-foreground hover:text-primary transition-colors">
-                <Github className="h-5 w-5" />
-              </Link>
-              <Link href="https://linkedin.com" className="text-muted-foreground hover:text-primary transition-colors">
+              <Link 
+                href="https://www.linkedin.com/company/codematesltd/" 
+                className="text-muted-foreground hover:text-primary transition-colors"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <Linkedin className="h-5 w-5" />
               </Link>
             </div>
@@ -42,13 +59,19 @@ export default function Footer() {
           <div>
             <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
             <ul className="space-y-2">
-              {['Home', 'Services', 'Projects', 'About', 'Contact'].map((item) => (
-                <li key={item}>
+              {[
+                { name: 'Home', path: '/' },
+                { name: 'Services', path: '/services' },
+                { name: 'Projects', path: '/projects' },
+                { name: 'About', path: '/about' },
+                { name: 'Contact', path: '/contact' }
+              ].map((item) => (
+                <li key={item.name}>
                   <Link 
-                    href={`#${item.toLowerCase()}`}
+                    href={item.path}
                     className="text-muted-foreground hover:text-primary transition-colors"
                   >
-                    {item}
+                    {item.name}
                   </Link>
                 </li>
               ))}
@@ -70,16 +93,18 @@ export default function Footer() {
           <p className="text-sm text-muted-foreground">
             © 2025 Codemates LTD. All rights reserved.
           </p>
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            className="mt-4 md:mt-0 rounded-full"
-            onClick={scrollToTop}
-          >
-            <ArrowUp className="h-5 w-5" />
-          </Button>
         </div>
       </div>
+      
+      {/* Back to top button */}
+      <Button
+        onClick={scrollToTop}
+        className="fixed bottom-4 right-4 rounded-full shadow-lg"
+        size="icon"
+        variant="outline"
+      >
+        <ArrowUp className="h-4 w-4" />
+      </Button>
     </footer>
   );
 }

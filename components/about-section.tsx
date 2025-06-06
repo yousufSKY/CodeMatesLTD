@@ -46,8 +46,8 @@ export default function AboutSection() {
   ];
 
   return (
-    <section id="about" ref={sectionRef} className="py-24 bg-muted/30">
-      <div className="container px-4 md:px-6">
+    <section id="about" ref={sectionRef} className="py-24 bg-muted/30 w-full">
+      <div className="container mx-auto px-4 md:px-6 max-w-7xl">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <motion.div
             initial={{ opacity: 0, x: -50 }}

@@ -50,8 +50,8 @@ export default function ProjectsSection() {
   };
 
   return (
-    <section id="projects" ref={sectionRef} className="py-24">
-      <div className="container px-4 md:px-6">
+    <section id="projects" ref={sectionRef} className="py-24 w-full">
+      <div className="container mx-auto px-4 md:px-6 max-w-7xl">
         <div className="text-center max-w-3xl mx-auto mb-16">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Our Projects</h2>
           <p className="text-muted-foreground text-lg">
