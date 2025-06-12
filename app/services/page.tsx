@@ -14,7 +14,7 @@ const services = [
 		name: "UI/UX Design",
 		description:
 			"Transform your digital presence with intuitive and beautiful user interface designs that delight your users.",
-		price: { min: 250, max: 1000 },
+		price: { startingFrom: "₹5,000" },
 		features: [
 			"User Research & Analysis",
 			"Wireframing & Prototyping",
@@ -26,7 +26,7 @@ const services = [
 		name: "Full Stack Web Development",
 		description:
 			"End-to-end web development solutions that bring your vision to life with modern technologies and best practices.",
-		price: { min: 800, max: 4000 },
+		price: { startingFrom: "₹20,000" },
 		features: [
 			"Custom Web Applications",
 			"Responsive Design",
@@ -38,7 +38,7 @@ const services = [
 		name: "Data Analysis",
 		description:
 			"Turn your data into actionable insights with comprehensive analysis and visualization solutions.",
-		price: { min: 250, max: 1200 },
+		price: { startingFrom: "₹10,000" },
 		features: [
 			"Data Collection & Cleaning",
 			"Statistical Analysis",
@@ -50,7 +50,7 @@ const services = [
 		name: "Data Science",
 		description:
 			"Leverage advanced data science techniques to unlock the power of your data and drive business growth.",
-		price: { min: 500, max: 3000 },
+		price: { startingFrom: "₹20,000" },
 		features: [
 			"Predictive Analytics",
 			"Data Mining",
@@ -62,7 +62,7 @@ const services = [
 		name: "Machine Learning Models",
 		description:
 			"Custom AI solutions that automate processes and provide intelligent insights for your business.",
-		price: { min: 800, max: 4000 },
+		price: { startingFrom: "₹10,000" },
 		features: [
 			"Custom ML Models",
 			"Model Training & Testing",
@@ -74,7 +74,7 @@ const services = [
 		name: "Internet of Things (IoT)",
 		description:
 			"Connect your physical devices to the digital world with custom IoT solutions and integrations.",
-		price: { min: 1000, max: 5000 },
+		price: { custom: true, note: "Based on models and requirements" },
 		features: [
 			"IoT Architecture Design",
 			"Device Integration",
@@ -86,7 +86,7 @@ const services = [
 		name: "Debugging & Optimization",
 		description:
 			"Resolve issues and improve performance of your existing systems with expert debugging services.",
-		price: { min: 100, max: 1000 },
+		price: { custom: true, note: "Based on problem complexity" },
 		features: [
 			"Performance Analysis",
 			"Bug Fixing",
@@ -98,7 +98,7 @@ const services = [
 		name: "Frontend & Backend",
 		description:
 			"Specialized development services for either frontend interfaces or backend systems and APIs.",
-		price: { min: 500, max: 3000 },
+		price: { startingFrom: "₹10,000" },
 		features: [
 			"Frontend Development",
 			"Backend Systems",
@@ -202,31 +202,28 @@ export default function ServicesPage() {
 											</div>
 											<p className="text-sm md:text-base text-muted-foreground">
 												{service.description}
-											</p>
-
-											{/* Price Range */}
-											{!service.isCustom ? (
-												<div className="pt-3 md:pt-4 border-t">
-													<div className="flex items-center space-x-2">
-														<DollarSign className="h-4 w-4 md:h-5 md:w-5 text-primary" />
+											</p>											{/* Price Range */}
+											<div className="pt-3 md:pt-4 border-t">
+												<div className="flex items-center space-x-2">
+													{service.price.custom ? (
 														<span className="font-semibold text-base md:text-lg">
-															${service.price.min.toLocaleString()} – $
-															{service.price.max.toLocaleString()}
+															{service.price.note}
 														</span>
-													</div>
-													<p className="text-xs md:text-sm text-muted-foreground mt-1">
-														Starting price range
-													</p>
+													) : (
+														<>
+															<span className="font-semibold text-base md:text-lg">
+																{service.price.startingFrom}
+															</span>
+															<span className="text-xs md:text-sm text-muted-foreground">
+																starting from
+															</span>
+														</>
+													)}
 												</div>
-											) : (
-												<div className="pt-3 md:pt-4 border-t">
-													<div className="flex items-center space-x-2">
-														<span className="font-semibold text-base md:text-lg">
-															Contact for Custom Pricing
-														</span>
-													</div>
-												</div>
-											)}
+												<p className="text-xs md:text-sm text-muted-foreground mt-1">
+													* Prices may vary based on pages, features, and functionalities
+												</p>
+											</div>
 
 											{/* Features */}
 											<ul className="space-y-2 pt-3 md:pt-4">
