@@ -9,7 +9,7 @@ import { services } from "@/lib/constants";
 
 export default function ServicesSection() {
   const sectionRef = useRef<HTMLElement>(null);
-  const isInView = useInView(sectionRef, { once: true, amount: 0.2 });
+  const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -26,58 +26,74 @@ export default function ServicesSection() {
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.5 },
+      transition: { duration: 0.5, ease: "easeOut" },
     },
   };
 
   return (
-    <section id="services" ref={sectionRef} className="py-24 bg-muted/30 w-full">
-      <div className="container mx-auto px-4 md:px-6 max-w-7xl">
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Our Services</h2>
-          <p className="text-muted-foreground text-lg">
-            We offer a comprehensive range of digital solutions to help your business
-            thrive in the modern tech landscape.
-          </p>
-        </div>
+    <section id="services" ref={sectionRef} className="w-full bg-muted/30 py-20 md:py-28">
+      <div className="container mx-auto max-w-7xl px-4 md:px-6">
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          animate={isInView ? "visible" : "hidden"}
+          className="mx-auto mb-16 max-w-3xl text-center"
+        >
+          <motion.h2
+            variants={itemVariants}
+            className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl md:text-5xl"
+          >
+            Our Digital Toolbox
+          </motion.h2>
+          <motion.p
+            variants={itemVariants}
+            className="mt-4 text-lg text-muted-foreground"
+          >
+            From concept to launch, we provide the full spectrum of digital
+            services to bring your vision to life.
+          </motion.p>
+        </motion.div>
 
         <motion.div
           variants={containerVariants}
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8"
+          className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4"
         >
-          {services.map((service, index) => (
+          {services.map((service) => (
             <motion.div
-              key={index}
+              key={service.title}
               variants={itemVariants}
-              className="bg-card rounded-lg p-4 sm:p-6 shadow-sm hover:shadow-md transition-all duration-300 border border-border hover:-translate-y-1"
+              className="group relative overflow-hidden rounded-xl border bg-card p-6 text-left shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
             >
-              <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-6">
-                <service.icon className="h-6 w-6 text-primary" />
+              <div className="relative z-10">
+                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                  <service.icon className="h-6 w-6" />
+                </div>
+                <h3 className="mb-2 text-lg font-semibold text-card-foreground">
+                  {service.title}
+                </h3>
+                <p className="text-sm text-muted-foreground">
+                  {service.description}
+                </p>
               </div>
-              <h3 className="text-xl font-semibold mb-3">{service.title}</h3>
-              <p className="text-muted-foreground">{service.description}</p>
             </motion.div>
           ))}
         </motion.div>
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-          transition={{ duration: 0.5, delay: 0.6 }}
-          className="text-center mt-12"
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.5, delay: 0.4 }}
+          className="mt-16 text-center"
         >
           <Link href="/services">
             <Button
-              className="group relative overflow-hidden rounded-full px-6 py-3 transition-all duration-300 hover:shadow-2xl hover:shadow-primary/30"
-              variant="default"
+              size="lg"
+              className="group rounded-full px-8 py-3 transition-transform hover:scale-105"
             >
-              <span className="relative z-10">
-                View All Services & Pricing
-                <ArrowRight className="inline-block ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-              </span>
-              <div className="absolute inset-0 bg-gradient-to-r from-primary to-primary/50 opacity-0 transition-opacity group-hover:opacity-100" />
+              <span>View All Services</span>
+              <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Button>
           </Link>
         </motion.div>
