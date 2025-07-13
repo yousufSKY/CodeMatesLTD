@@ -1,9 +1,10 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import { motion, useInView } from "framer-motion";
 import { Quote, Star } from "lucide-react";
 import { projects } from "@/lib/constants";
+import type { CarouselApi } from "@/components/ui/carousel";
 import {
   Carousel,
   CarouselContent,
@@ -15,6 +16,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default function FeedbackSection() {
   const sectionRef = useRef<HTMLElement>(null);
+  const [api, setApi] = useState<CarouselApi>();
   const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
 
   const feedbacks = projects
@@ -23,6 +25,16 @@ export default function FeedbackSection() {
       projectTitle: project.title,
       ...project.feedback!,
     }));
+
+  useEffect(() => {
+    if (!api) return;
+
+    const interval = setInterval(() => {
+      api.scrollNext();
+    }, 4000); // Change slide every 4 seconds
+
+    return () => clearInterval(interval);
+  }, [api]);
 
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -60,21 +72,21 @@ export default function FeedbackSection() {
         >
           <Carousel
             opts={{
-              align: "start",
-              loop: feedbacks.length > 2,
+              align: "center",
+              loop: true,
+              dragFree: true
             }}
-            className="w-full"
+            setApi={setApi}
+            className="w-full max-w-6xl mx-auto"
           >
-            <CarouselContent
-              className={feedbacks.length <= 2 ? "lg:justify-center" : ""}
-            >
+            <CarouselContent className="-ml-2 md:-ml-4">
               {feedbacks.map((feedback, index) => (
                 <CarouselItem
                   key={index}
-                  className="md:basis-1/2 lg:basis-1/2"
+                  className="pl-2 md:pl-4 basis-full sm:basis-1/2 lg:basis-1/2"
                 >
                   <div className="p-4 h-full">
-                    <div className="flex h-full flex-col justify-between rounded-xl border bg-card p-6 shadow-sm">
+                    <div className="flex h-full flex-col justify-between rounded-xl border bg-card p-6 shadow-sm hover:shadow-lg transition-shadow">
                       <div>
                         <Quote className="h-8 w-8 text-primary/30" />
                         <p className="mt-4 text-base italic text-muted-foreground">

@@ -8,6 +8,7 @@ import { Menu, X } from "lucide-react";
 import { ThemeToggle } from "./theme-toggle";
 import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
+import { QuoteButton } from "./ui/quote-button";
 
 type NavItem = {
   name: string;
@@ -17,6 +18,7 @@ type NavItem = {
 const navigation: NavItem[] = [
   { name: "Services", path: "/services" },
   { name: "Projects", path: "/projects" },
+  { name: "Blog", path: "/blog" },
   { name: "About", path: "/about" },
   { name: "Contact", path: "/contact" },
 ];
@@ -93,16 +95,22 @@ export default function Header() {
     }
   };
 
+  const handleGetQuote = (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    router.push('/contact?type=quote');
+  };
+
   return (
     <header
       className={cn(
         "fixed top-0 z-50 w-full transition-all duration-300",
+        "text-foreground",
         isScrolled
-          ? "bg-background/80 backdrop-blur-md shadow-sm"
+          ? "bg-background/80 backdrop-blur-md border-b border-border/40"
           : "bg-transparent"
       )}
     >
-      <nav className="container mx-auto flex items-center justify-between p-4">
+      <nav className="container mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-8 py-4">
         <div className="flex items-center">
           <Link href="/" className="flex items-center space-x-2">
             <span className="text-2xl font-bold bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">
@@ -134,6 +142,22 @@ export default function Header() {
           <div className="flex items-center space-x-4">
             <ThemeToggle />
             <Button
+              variant="ghost"
+              className={cn(
+                "rounded-full relative group",
+                "bg-primary/10 hover:bg-primary/20",
+                "text-primary hover:text-primary",
+                "border border-primary/10 hover:border-primary/20",
+                "shadow-sm hover:shadow-md transition-all duration-300"
+              )}
+              onClick={handleGetQuote}
+            >
+              <span className="relative z-10 flex items-center gap-2">
+                Get a Free Quote
+                <span className="inline-block transition-transform duration-300 group-hover:translate-x-1">→</span>
+              </span>
+            </Button>
+            <Button
               asChild
               className="rounded-full"
             >
@@ -160,7 +184,8 @@ export default function Header() {
         {/* Mobile menu */}
         <div
           className={cn(
-            "fixed inset-y-0 right-0 z-50 w-full bg-background px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10 transform transition-transform duration-300 ease-in-out",
+            "fixed inset-y-0 right-0 z-50 w-full bg-background/95 backdrop-blur-sm px-6 py-6",
+            "sm:max-w-sm border-l border-border transform transition-transform duration-300 ease-in-out",
             mobileMenuOpen ? "translate-x-0" : "translate-x-full"
           )}
         >
@@ -183,19 +208,48 @@ export default function Header() {
                 {navigation.map((item) => (
                   <Link
                     key={item.name}
-                    href={pathname === "/" ? item.path : item.path}
-                    onClick={(e) => handleNavClick(e, item)}
-                    className={cn(
-                      "-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 transition-colors duration-300",
-                      ((pathname === "/" && currentHash === item.path) || 
-                       pathname === item.path)
-                        ? "text-primary bg-primary/10"
-                        : "hover:bg-muted"
-                    )}
+                    href={item.path}
+                    onClick={(e) => {
+                      handleNavClick(e, item);
+                      setMobileMenuOpen(false);
+                    }}
+                    className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 hover:bg-accent"
                   >
                     {item.name}
                   </Link>
                 ))}
+              </div>
+              <div className="py-6 space-y-4">
+                <Button
+                  variant="ghost"
+                  className={cn(
+                    "w-full rounded-full relative group",
+                    "bg-primary/10 hover:bg-primary/20",
+                    "text-primary hover:text-primary",
+                    "border border-primary/10 hover:border-primary/20",
+                    "shadow-sm hover:shadow-md transition-all duration-300"
+                  )}
+                  onClick={(e) => {
+                    handleGetQuote(e);
+                    setMobileMenuOpen(false);
+                  }}
+                >
+                  <span className="relative z-10 flex items-center justify-center gap-2">
+                    Get a Free Quote
+                    <span className="inline-block transition-transform duration-300 group-hover:translate-x-1">→</span>
+                  </span>
+                </Button>
+                <Button
+                  className="w-full rounded-full"
+                  asChild
+                >
+                  <Link 
+                    href={pathname === "/" ? "#contact" : "/#contact"}
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Contact Us
+                  </Link>
+                </Button>
               </div>
             </div>
           </div>

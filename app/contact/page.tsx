@@ -1,20 +1,22 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { motion, useInView } from "framer-motion";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { 
-  Mail, 
-  Phone, 
+import { useSearchParams } from "next/navigation";
+import {
+  Mail,
+  Phone,
   Send,
   Linkedin,
   X,
   Instagram,
   Facebook,
-  ArrowLeft
+  ArrowLeft,
+  MapPin
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -59,13 +61,32 @@ const formSchema = z.object({
   }),
 });
 
+const quoteFormSchema = z.object({
+  name: z.string().min(2, { message: "Name must be at least 2 characters." }),
+  email: z.string().email({ message: "Please enter a valid email address." }),
+  company: z.string().min(2, { message: "Company name must be at least 2 characters." }),
+  projectType: z.enum(projectTypes.map(pt => pt.value) as [string, ...string[]], {
+    required_error: "Please select a project type.",
+  }),
+  budget: z.enum(["20k-50k", "50k-2L", "2L-5L", "5L-10L"], {
+    required_error: "Please select a budget range.",
+  }),
+  timeline: z.enum(["1-3 months", "3-6 months", "6+ months"], {
+    required_error: "Please select a timeline.",
+  }),
+  description: z.string().min(10, { message: "Please provide more details about your project." }),
+});
+
 type FormValues = z.infer<typeof formSchema>;
+type QuoteFormValues = z.infer<typeof quoteFormSchema>;
 
 export default function ContactPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const sectionRef = useRef<HTMLElement>(null);
-  const isInView = useInView(sectionRef, { once: true, amount: 0.2 });
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const isInView = useInView(sectionRef, { once: true, amount: 0.1 });
   const { toast } = useToast();
+  const searchParams = useSearchParams();
+  const isQuoteRequest = searchParams.get("type") === "quote";
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -77,7 +98,27 @@ export default function ContactPage() {
     },
   });
 
-  const onSubmit = async (data: FormValues) => {
+  const quoteForm = useForm<QuoteFormValues>({
+    resolver: zodResolver(quoteFormSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      company: "",
+      projectType: "other",
+      budget: "20k-50k",
+      timeline: "1-3 months",
+      description: "",
+    },
+  });
+
+  // Auto-scroll to form when type=quote is present
+  useEffect(() => {
+    if (isQuoteRequest && sectionRef.current) {
+      sectionRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [isQuoteRequest]);
+
+  const handleSubmit = async (data: FormValues | QuoteFormValues) => {
     setIsSubmitting(true);
     try {
       const response = await fetch('/api/contact', {
@@ -85,7 +126,10 @@ export default function ContactPage() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify({
+          ...data,
+          type: isQuoteRequest ? 'quote' : 'contact'
+        }),
       });
 
       if (!response.ok) {
@@ -93,11 +137,15 @@ export default function ContactPage() {
       }
       
       toast({
-        title: "Message sent successfully!",
+        title: isQuoteRequest ? "Quote request sent!" : "Message sent successfully!",
         description: "We'll get back to you as soon as possible.",
       });
       
-      form.reset();
+      if (isQuoteRequest) {
+        quoteForm.reset();
+      } else {
+        form.reset();
+      }
     } catch (error) {
       console.error('Error sending message:', error);
       toast({
@@ -122,6 +170,12 @@ export default function ContactPage() {
       label: "Phone",
       value: "+91 7348975886",
       href: "tel:+917348975886"
+    },
+    {
+      icon: MapPin,
+      label: "Location",
+      value: "Kalaburagi, Karnataka, India",
+      href: "https://www.google.com/maps/place/Kalaburagi,+Karnataka/@17.3298693,76.7661252,12z/data=!3m1!4b1!4m6!3m5!1s0x3bc8c7455c624c43:0xf43fc78f2fc7053d!8m2!3d17.3298693!4d76.7661252!16s%2Fg%2F11c1z8_8_8"
     }
   ];
   const socialLinks = [
@@ -148,42 +202,43 @@ export default function ContactPage() {
   ];
 
   return (
-    <main className="flex-1 w-full min-h-screen">
-      <section id="contact" ref={sectionRef} className="relative py-12 md:py-24 w-full">
-        {/* Background decorations */}
-        <div className="absolute inset-0 bg-gradient-to-b from-background via-background/90 to-background" />
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:24px_24px]" />
+    <div className="container mx-auto px-4 py-24 mt-16">
+      <div className="max-w-2xl mx-auto mb-16 text-center">
+        <h1 className="text-4xl font-bold mb-4">Get in Touch</h1>
+        <p className="text-lg text-muted-foreground">
+          Have a project in mind? We'd love to hear from you. Send us a message and we'll respond as soon as possible.
+        </p>
+      </div>
 
-        <div className="container relative z-10 mx-auto px-4 md:px-6 max-w-7xl">
-          {/* Back button */}
-          <Link href="/">
-            <Button variant="ghost" className="group mb-6 md:mb-8">
-              <ArrowLeft className="w-4 h-4 mr-2 transition-transform group-hover:-translate-x-1" />
-              Back to Home
-            </Button>
-          </Link>
+      <div className="grid md:grid-cols-2 gap-12 max-w-5xl mx-auto">
+        {/* Contact Form */}
+        <Card className="p-6">
+          <motion.div
+            ref={sectionRef}
+            initial={{ opacity: 0, y: 20 }}
+            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+            transition={{ duration: 0.5 }}
+            className="space-y-8"
+          >
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 md:gap-12">
-            {/* Contact Form */}
-            <div className="lg:col-span-2">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-                transition={{ duration: 0.5 }}
-                className="space-y-8"
-              >
-                <div>
-                  <h2 className="text-3xl md:text-4xl font-bold mb-4">Get in Touch</h2>
-                  <p className="text-lg text-muted-foreground">
-                    Have a project in mind? We'd love to hear about it.
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+            {isQuoteRequest ? (
+              <>
+                <div className="mb-8">
+                  <h1 className="text-4xl font-bold tracking-tight">Request a Free Quote</h1>
+                  <p className="mt-4 text-lg text-muted-foreground">
+                    Fill out the form below and we'll get back to you with a detailed quote for your project.
                   </p>
                 </div>
-
-                <Card className="p-6 md:p-8">
-                  <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                <Form {...quoteForm}>
+                  <form onSubmit={quoteForm.handleSubmit(handleSubmit)} className="space-y-6">
+                    <div className="grid gap-6 md:grid-cols-2">
                       <FormField
-                        control={form.control}
+                        control={quoteForm.control}
                         name="name"
                         render={({ field }) => (
                           <FormItem>
@@ -195,23 +250,36 @@ export default function ContactPage() {
                           </FormItem>
                         )}
                       />
-                      
                       <FormField
-                        control={form.control}
+                        control={quoteForm.control}
                         name="email"
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>Email</FormLabel>
                             <FormControl>
-                              <Input placeholder="Your email" {...field} />
+                              <Input placeholder="you@example.com" type="email" {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
                         )}
                       />
-                      
+                    </div>
+                    <FormField
+                      control={quoteForm.control}
+                      name="company"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Company</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Your company name" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <div className="grid gap-6 md:grid-cols-2">
                       <FormField
-                        control={form.control}
+                        control={quoteForm.control}
                         name="projectType"
                         render={({ field }) => (
                           <FormItem>
@@ -219,134 +287,268 @@ export default function ContactPage() {
                             <Select onValueChange={field.onChange} defaultValue={field.value}>
                               <FormControl>
                                 <SelectTrigger>
-                                  <SelectValue placeholder="Select the type of service you need" />
+                                  <SelectValue placeholder="Select project type" />
                                 </SelectTrigger>
                               </FormControl>
                               <SelectContent>
                                 {projectTypes.map((type) => (
-                                  <SelectItem
-                                    key={type.value}
-                                    value={type.value}
-                                    className="cursor-pointer"
-                                  >
+                                  <SelectItem key={type.value} value={type.value}>
                                     {type.label}
                                   </SelectItem>
                                 ))}
                               </SelectContent>
                             </Select>
-                            <FormDescription>
-                              Choose the service that best matches your project needs
-                            </FormDescription>
                             <FormMessage />
                           </FormItem>
                         )}
                       />
-                      
                       <FormField
-                        control={form.control}
-                        name="message"
+                        control={quoteForm.control}
+                        name="budget"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Message</FormLabel>
-                            <FormControl>
-                              <Textarea 
-                                placeholder="Tell us about your project..." 
-                                className="min-h-[120px]"
-                                {...field} 
-                              />
-                            </FormControl>
+                            <FormLabel>Budget Range</FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                              <FormControl>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Select budget range" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                <SelectItem value="20k-50k">₹20,000 - ₹50,000</SelectItem>
+                                <SelectItem value="50k-2L">₹50,000 - ₹2 Lakhs</SelectItem>
+                                <SelectItem value="2L-5L">₹2 Lakhs - ₹5 Lakhs</SelectItem>
+                                <SelectItem value="5L-10L">₹5 Lakhs - ₹10 Lakhs</SelectItem>
+                              </SelectContent>
+                            </Select>
                             <FormMessage />
                           </FormItem>
                         )}
                       />
-                      
-                      <Button 
-                        type="submit" 
-                        className="w-full"
-                        size="lg"
-                        disabled={isSubmitting}
-                      >
-                        {isSubmitting ? (
-                          <span className="flex items-center justify-center">
-                            <svg className="animate-spin -ml-1 mr-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                              <path
-                                className="opacity-75"
-                                fill="currentColor"
-                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                              />
-                            </svg>
-                            Sending...
-                          </span>
-                        ) : (
-                          <span className="flex items-center justify-center">
-                            Send Message
-                            <Send className="ml-2 h-4 w-4" />
-                          </span>
-                        )}
-                      </Button>
-                    </form>
-                  </Form>
-                </Card>
-              </motion.div>
-            </div>
+                    </div>
+                    <FormField
+                      control={quoteForm.control}
+                      name="timeline"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Expected Timeline</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select timeline" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="1-3 months">1-3 months</SelectItem>
+                              <SelectItem value="3-6 months">3-6 months</SelectItem>
+                              <SelectItem value="6+ months">6+ months or ongoing</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={quoteForm.control}
+                      name="description"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Project Description</FormLabel>
+                          <FormControl>
+                            <Textarea
+                              placeholder="Please provide details about your project requirements, goals, and any specific features you need."
+                              className="h-32"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <Button type="submit" disabled={isSubmitting} className="w-full">
+                      {isSubmitting ? (
+                        <>
+                          <Send className="mr-2 h-4 w-4 animate-spin" />
+                          Sending...
+                        </>
+                      ) : (
+                        <>
+                          <Send className="mr-2 h-4 w-4" />
+                          Request Quote
+                        </>
+                      )}
+                    </Button>
+                  </form>
+                </Form>
+              </>
+            ) : (
+              // Regular contact form
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+                  <FormField
+                    control={form.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Name</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Your name" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Email</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Your email" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
+                    name="projectType"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Project Type</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select the type of service you need" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {projectTypes.map((type) => (
+                              <SelectItem
+                                key={type.value}
+                                value={type.value}
+                                className="cursor-pointer"
+                              >
+                                {type.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormDescription>
+                          Choose the service that best matches your project needs
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
+                    name="message"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Message</FormLabel>
+                        <FormControl>
+                          <Textarea 
+                            placeholder="Tell us about your project..." 
+                            className="min-h-[120px]"
+                            {...field} 
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <Button 
+                    type="submit" 
+                    className="w-full"
+                    size="lg"
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? (
+                      <span className="flex items-center justify-center">
+                        <svg className="animate-spin -ml-1 mr-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                          />
+                        </svg>
+                        Sending...
+                      </span>
+                    ) : (
+                      <span className="flex items-center justify-center">
+                        Send Message
+                        <Send className="ml-2 h-4 w-4" />
+                      </span>
+                    )}
+                  </Button>
+                </form>
+              </Form>
+            )}
+            </motion.div>
+          </motion.div>
+        </Card>
 
-            {/* Contact Information */}
-            <Card className="p-6 md:p-8">
-              <div className="space-y-6">
-                <div>
-                  <h2 className="text-2xl font-semibold mb-3">Contact Information</h2>
-                  <p className="text-muted-foreground">
-                    Ready to start your project? Contact us using any of the following methods.
-                  </p>
-                </div>
-
-                <div className="space-y-4">
-                  {contactInfo.map((info, index) => (
-                    <motion.a
-                      key={index}
+        {/* Contact Info & Map */}
+        <div className="space-y-8">
+          {/* Contact Info */}
+          <div className="grid gap-4">
+            {contactInfo.map((info, index) => (
+              <Card key={index} className="p-4">
+                <div className="flex items-center gap-4">
+                  <div className="p-2 bg-primary/10 rounded-lg">
+                    <info.icon className="h-6 w-6 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="font-medium mb-1">{info.label}</h3>
+                    <a
                       href={info.href}
-                      className="flex items-center space-x-4 p-3 rounded-lg hover:bg-muted/50 transition-colors"
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-                      transition={{ duration: 0.5, delay: index * 0.1 }}
+                      className="text-muted-foreground hover:text-primary transition-colors"
                     >
-                      <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                        <info.icon className="w-5 h-5 text-primary" />
-                      </div>
-                      <div className="flex-grow">
-                        <div className="font-medium">{info.label}</div>
-                        <div className="text-muted-foreground text-sm">{info.value}</div>
-                      </div>
-                    </motion.a>
-                  ))}
-                </div>
-
-                <div>
-                  <h3 className="text-lg font-semibold mb-4">Follow Us</h3>
-                  <div className="flex space-x-4">
-                    {socialLinks.map((link, index) => (
-                      <motion.a
-                        key={index}
-                        href={link.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label={link.label}
-                        className="w-10 h-10 rounded-full bg-muted flex items-center justify-center hover:bg-primary/10 transition-all duration-300 hover:-translate-y-1"
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-                        transition={{ duration: 0.5, delay: 0.4 + index * 0.1 }}
-                      >
-                        <link.icon className="h-5 w-5" />
-                      </motion.a>
-                    ))}
+                      {info.value}
+                    </a>
                   </div>
                 </div>
-              </div>
-            </Card>
+              </Card>
+            ))}
+          </div>
+
+          {/* Google Maps */}
+          <Card className="overflow-hidden">
+            <iframe
+              title="Codemates LTD Location"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d121659.95755604982!2d76.76612520761267!3d17.329869311037275!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bc8c7455c624c43%3A0xf43fc78f2fc7053d!2sKalaburagi%2C%20Karnataka!5e0!3m2!1sen!2sin!4v1710340477115!5m2!1sen!2sin"
+              width="100%"
+              height="400"
+              style={{ border: 0 }}
+              allowFullScreen
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+            />
+          </Card>
+          
+          {/* Social Media Links */}
+          <div className="flex justify-center gap-4">
+            {socialLinks.map((link, index) => (
+              <Link
+                key={index}
+                href={link.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2 rounded-full bg-primary/10 hover:bg-primary/20 transition-colors"
+              >
+                <link.icon className="h-5 w-5 text-primary" />
+              </Link>
+            ))}
           </div>
         </div>
-      </section>
-    </main>
+      </div>
+    </div>
   );
 }
