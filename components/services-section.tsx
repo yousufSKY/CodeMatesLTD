@@ -70,7 +70,7 @@ export default function ServicesSection() {
               {/* Gradient background effect */}
               <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
               
-              <div className="relative z-10 p-6">
+              <div className="relative z-10 p-6 flex flex-col h-full">
                 <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary ring-1 ring-primary/20 transition-transform duration-300 group-hover:scale-110">
                   <service.icon className="h-6 w-6" />
                 </div>
@@ -79,28 +79,56 @@ export default function ServicesSection() {
                   {service.title}
                 </h3>
                 
-                <p className="text-sm text-muted-foreground leading-relaxed mb-4">
+                <p className="text-sm text-muted-foreground leading-relaxed flex-grow mb-6">
                   {service.description}
                 </p>
                 
-                <Button
-                  variant="ghost"
-                  className="text-sm text-primary hover:text-primary/90 hover:bg-primary/5 p-0 h-auto font-medium group/btn"
-                  asChild
-                >
-                  <Link 
-                    href={{
-                      pathname: "/contact",
-                      query: { type: "quote", service: service.title.toLowerCase().replace(/\s+/g, '-') }
-                    }}
+                <div className="mt-auto">
+                  <Button
+                    variant="ghost"
+                    className="text-sm text-primary hover:text-primary/90 hover:bg-primary/5 p-0 h-auto font-medium group/btn"
+                    asChild
                   >
-                    Get Started
-                    <ArrowRight className="ml-1 h-4 w-4 transition-transform duration-300 group-hover/btn:translate-x-1" />
-                  </Link>
-                </Button>
+                    <Link 
+                      href={{
+                        pathname: "/contact",
+                        query: { type: "quote", service: service.title.toLowerCase().replace(/\s+/g, '-') }
+                      }}
+                    >
+                      Get Started
+                      <ArrowRight className="ml-1 h-4 w-4 transition-transform duration-300 group-hover/btn:translate-x-1" />
+                    </Link>
+                  </Button>
+                </div>
               </div>
             </motion.div>
           ))}
+        </motion.div>
+
+        {/* Explore Services Button */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.5, delay: 0.4 }}
+          className="flex justify-center mt-12"
+        >
+          <Button
+            variant="outline"
+            size="lg"
+            className={cn(
+              "rounded-full font-medium group relative",
+              "border-primary/20 hover:border-primary/40",
+              "bg-background/50 hover:bg-background/80",
+              "backdrop-blur-sm shadow-sm hover:shadow-md",
+              "transition-all duration-300"
+            )}
+            asChild
+          >
+            <Link href="/services" className="flex items-center gap-2">
+              Explore All Services
+              <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
+            </Link>
+          </Button>
         </motion.div>
 
         {/* Enhanced CTA Section */}

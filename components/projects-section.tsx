@@ -160,6 +160,26 @@ export default function ProjectsSection() {
             </motion.div>
           ))}
         </motion.div>
+
+        {/* Explore Projects Button */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.5, delay: 0.4 }}
+          className="flex justify-center mt-12"
+        >
+          <Button
+            variant="outline"
+            size="lg"
+            className="rounded-full font-medium group relative border-primary/20 hover:border-primary/40 bg-background/50 hover:bg-background/80 backdrop-blur-sm shadow-sm hover:shadow-md transition-all duration-300"
+            asChild
+          >
+            <Link href="/projects" className="flex items-center gap-2">
+              Explore All Projects
+              <ExternalLink className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
+            </Link>
+          </Button>
+        </motion.div>
       </div>
     </section>
   );
