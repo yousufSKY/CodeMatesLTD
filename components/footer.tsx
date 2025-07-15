@@ -24,7 +24,7 @@ export default function Footer() {
   };
 
   return (
-    <footer className="w-full bg-background text-foreground border-t border-border mt-20">
+    <footer className="w-full bg-background text-foreground border-t border-gray-200/50 dark:border-gray-800/50 mt-20">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl py-12">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 mb-8">
           {/* Company Info */}
