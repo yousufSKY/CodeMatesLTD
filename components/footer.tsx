@@ -14,7 +14,7 @@ const quickLinks = [
 
 const contactInfo = [
   { icon: MapPin, label: 'Kalaburagi, Karnataka, India' },
-  { icon: Mail, label: 'codematesltd@gmail.com', href: 'mailto:codematesltd@gmail.com' },
+  { icon: Mail, label: 'support@codemates.in', href: 'mailto:support@codemates.in' },
   { icon: PhoneCall, label: '+91 73489 75886', href: 'tel:+917348975886' },
 ];
 

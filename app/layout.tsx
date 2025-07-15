@@ -146,7 +146,7 @@ export default function RootLayout({
                 '@type': 'ContactPoint',
                 telephone: '+91-123-456-7890',
                 contactType: 'customer service',
-                email: 'codematesltd@gmail.com',
+                email: 'support@codemates.in',
                 areaServed: 'IN',
                 availableLanguage: ['en']
               },

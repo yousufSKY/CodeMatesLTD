@@ -113,8 +113,8 @@ export default function ContactSection() {
     {
       icon: Mail,
       label: "Email",
-      value: "codematesltd@gmail.com",
-      href: "mailto:codematesltd@gmail.com",
+      value: "support@codemates.in",
+      href: "mailto:support@codemates.in",
     },
     {
       icon: Phone,

@@ -32,8 +32,8 @@ const contactInfo = [
   },
   {
     icon: Mail,
-    label: "codematesltd@gmail.com",
-    href: "mailto:codematesltd@gmail.com",
+    label: "support@codemates.in",
+    href: "mailto:support@codemates.in",
   },
   {
     icon: Phone,

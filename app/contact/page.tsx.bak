@@ -166,8 +166,8 @@ function ContactForm() {
     {
       icon: Mail,
       label: "Email",
-      value: "codematesltd@gmail.com",
-      href: "mailto:codematesltd@gmail.com"
+      value: "support@codemates.in",
+      href: "mailto:support@codemates.in"
     },
     {
       icon: Phone,
@@ -588,8 +588,8 @@ const contactInfo = [
   },
   {
     icon: Mail,
-    label: "codematesltd@gmail.com",
-    href: "mailto:codematesltd@gmail.com",
+    label: "support@codemates.in",
+    href: "mailto:support@codemates.in",
   },
   {
     icon: Phone,
