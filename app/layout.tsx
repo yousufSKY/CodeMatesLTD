@@ -8,6 +8,7 @@ import Header from '@/components/header';
 import Footer from '@/components/footer';
 import { Toaster } from '@/components/ui/toaster';
 import { AccessibilityProvider } from '@/components/providers/accessibility-provider';
+import { siteConfig } from '@/lib/metadata';
 
 // Initialize Google Font with optimization settings
 const inter = Inter({ 
@@ -20,56 +21,47 @@ export const viewport: Viewport = {
   themeColor: '#0070F3',
   width: 'device-width',
   initialScale: 1,
-};
+}
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://codemates.com'),
   title: {
-    default: 'Codemates LTD | Code, Analyze, Deploy',
-    template: '%s | Codemates LTD',
+    default: siteConfig.name,
+    template: `%s | ${siteConfig.name}`,
   },
-  description: 'Leading tech company delivering innovative digital solutions through web development, data analysis, machine learning, and UI/UX design. Transform your business with our cutting-edge services.',
-  keywords: [
-    'tech company',
-    'web development',
-    'data analysis',
-    'machine learning',
-    'UI/UX design',
-    'software development',
-    'digital transformation',
-    'IT consulting',
-    'Kalaburagi tech',
-    'Karnataka IT services'
-  ],
-  manifest: '/site.webmanifest',
+  description: siteConfig.description,
+  keywords: siteConfig.keywords,
+  authors: siteConfig.authors,
+  creator: siteConfig.creator,
+  metadataBase: siteConfig.metadataBase,
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    url: siteConfig.url,
+    title: siteConfig.name,
+    description: siteConfig.description,
+    siteName: siteConfig.name,
+    images: [
+      {
+        url: siteConfig.ogImage,
+        width: 1200,
+        height: 630,
+        alt: siteConfig.name,
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: siteConfig.name,
+    description: siteConfig.description,
+    images: [siteConfig.ogImage],
+    creator: '@codematesltd',
+  },
   icons: {
-    icon: [
-      { url: '/favicon.ico', sizes: '48x48' },
-      { url: '/favicon.svg', sizes: 'any', type: 'image/svg+xml' },
-    ],
-    apple: [
-      { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
-    ],
-    other: [
-      { url: '/icon-192.png', sizes: '192x192', type: 'image/png' },
-      { url: '/icon-512.png', sizes: '512x512', type: 'image/png' },
-    ],
+    icon: '/favicon.ico',
+    shortcut: '/favicon-16x16.png',
+    apple: '/apple-touch-icon.png',
   },
-  applicationName: 'Codemates LTD',
-  authors: [{ name: 'Codemates LTD Team' }],
-  generator: 'Next.js',
-  formatDetection: {
-    telephone: true,
-    date: true,
-    address: true,
-    email: true,
-    url: true,
-  },
-  appleWebApp: {
-    capable: true,
-    statusBarStyle: 'default',
-    title: 'Codemates LTD',
-  },
+  manifest: '/site.webmanifest',
   robots: {
     index: true,
     follow: true,
@@ -81,31 +73,39 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     },
   },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Codemates LTD | Code, Analyze, Deploy',
-    description: 'Transforming businesses with cutting-edge digital solutions.',
-    creator: '@codematesltd',
-    creatorId: 'codematesltd',
-    images: ['/og-image.jpg'],
+  verification: {
+    google: 'your-google-site-verification',
+    yandex: 'your-yandex-verification',
   },
-  openGraph: {
-    type: 'website',
-    locale: 'en_US',
-    url: '/',
-    siteName: 'Codemates LTD',
-    title: 'Codemates LTD | Code, Analyze, Deploy',
-    description: 'Leading tech company specializing in web development, data analysis, machine learning, and UI/UX design.',
-    images: [
-      {
-        url: '/og-image.jpg',
-        width: 1200,
-        height: 630,
-        alt: 'Codemates LTD - Digital Solutions Provider',
-      },
-    ],
+}
+
+// Schema.org JSON-LD for organization
+const organizationSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: siteConfig.name,
+  url: siteConfig.url,
+  logo: `${siteConfig.url}/logo.png`,
+  sameAs: [
+    siteConfig.links.twitter,
+    siteConfig.links.github,
+    siteConfig.links.linkedin,
+  ],
+  contactPoint: {
+    '@type': 'ContactPoint',
+    telephone: '+91-73489-75886',
+    contactType: 'customer service',
+    email: 'support@codemates.in',
+    areaServed: 'IN',
+    availableLanguage: ['en'],
   },
-};
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'Kalaburagi',
+    addressRegion: 'Karnataka',
+    addressCountry: 'IN',
+  },
+}
 
 export default function RootLayout({
   children,

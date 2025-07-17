@@ -32,12 +32,27 @@ export default function Header() {
   // Handle scroll locking when mobile menu is open
   React.useEffect(() => {
     if (mobileMenuOpen) {
-      document.body.style.overflow = 'hidden';
+      // Store the current scroll position
+      const scrollY = window.scrollY;
+      // Add classes to prevent scroll and maintain position
+      document.documentElement.style.setProperty('--scroll-position', `-${scrollY}px`);
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = '100%';
     } else {
-      document.body.style.overflow = 'unset';
+      // Restore scroll position
+      const scrollY = document.body.style.top;
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
+      window.scrollTo(0, parseInt(scrollY || '0') * -1);
     }
+
     return () => {
-      document.body.style.overflow = 'unset';
+      // Cleanup function to ensure scroll is restored
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
     };
   }, [mobileMenuOpen]);
 
@@ -195,24 +210,26 @@ export default function Header() {
         {/* Mobile menu overlay */}
         <div
           className={cn(
-            "fixed inset-0 bg-background/80 backdrop-blur-sm z-50",
-            "transition-opacity duration-300",
+            "fixed inset-0 bg-background/80 backdrop-blur-sm z-[100]",
+            "transition-all duration-300",
             mobileMenuOpen ? "opacity-100" : "opacity-0 pointer-events-none"
           )}
           aria-hidden="true"
+          onClick={() => setMobileMenuOpen(false)} // Close menu when clicking overlay
         />
 
         {/* Mobile menu drawer */}
         <div
           className={cn(
-            "fixed inset-y-0 right-0 z-50 w-full bg-background shadow-xl",
-            "sm:max-w-sm border-l border-border/50",
-            "transform transition-transform duration-300 ease-out",
-            "overflow-y-auto", // Enable scrolling within the drawer
+            "fixed inset-0 z-[100] bg-background shadow-xl",
+            "sm:max-w-sm sm:right-0 sm:left-auto",
+            "transform transition-all duration-300 ease-out",
+            "flex flex-col", // Enable proper flex layout
             mobileMenuOpen ? "translate-x-0" : "translate-x-full"
           )}
         >
-          <div className="sticky top-0 z-20 bg-background/95 backdrop-blur-sm border-b border-border/50 px-6 py-4">
+          {/* Header */}
+          <div className="flex-shrink-0 bg-background/95 backdrop-blur-sm border-b border-border/50 px-6 py-4">
             <div className="flex items-center justify-between">
               <Link href="/" className="p-1.5" onClick={() => setMobileMenuOpen(false)}>
                 <span className="text-2xl font-bold bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">
@@ -229,9 +246,11 @@ export default function Header() {
               </button>
             </div>
           </div>
-          <div className="px-6 py-6">
-            <div className="flex flex-col divide-y divide-border">
-              <div className="space-y-3 pb-6">
+
+          {/* Scrollable content */}
+          <div className="flex-1 overflow-y-auto overscroll-contain px-6 py-6">
+            <div className="flex flex-col h-full">
+              <nav className="space-y-3 pb-6 flex-1">
                 {navigation.map((item) => (
                   <Link
                     key={item.name}
@@ -244,14 +263,17 @@ export default function Header() {
                       "block rounded-lg px-4 py-3 text-base font-semibold",
                       "transition-colors duration-200",
                       "hover:bg-accent hover:text-accent-foreground",
+                      "active:scale-[0.98] active:duration-75",
                       pathname === item.path && "bg-accent/50 text-accent-foreground"
                     )}
                   >
                     {item.name}
                   </Link>
                 ))}
-              </div>
-              <div className="pt-6 space-y-4">
+              </nav>
+
+              {/* Bottom actions */}
+              <div className="flex-shrink-0 space-y-4 pt-6 border-t border-border">
                 <Button
                   variant="ghost"
                   className={cn(

@@ -1,7 +1,8 @@
 import { MetadataRoute } from 'next';
+import { siteConfig } from '@/lib/metadata';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://codemates.com';
+  const baseUrl = siteConfig.url;
 
   return [
     {

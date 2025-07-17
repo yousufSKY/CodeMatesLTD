@@ -3,6 +3,8 @@
 import { useRef } from "react";
 import Link from "next/link";
 import { motion, useInView } from "framer-motion";
+import Script from 'next/script';
+import { pagesMetadata, siteConfig } from '@/lib/metadata';
 import { 
   Code, 
   PenTool, 
@@ -18,6 +20,56 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+
+// Services structured data
+const servicesSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  itemListElement: [
+    {
+      '@type': 'Service',
+      '@id': `${siteConfig.url}/services#web-development`,
+      name: 'Web Development',
+      description: 'Custom web applications built with modern technologies and best practices.',
+      provider: {
+        '@type': 'Organization',
+        name: siteConfig.name,
+      },
+      areaServed: {
+        '@type': 'Country',
+        name: 'India',
+      },
+    },
+    {
+      '@type': 'Service',
+      '@id': `${siteConfig.url}/services#mobile-development`,
+      name: 'Mobile App Development',
+      description: 'Native and cross-platform mobile applications for iOS and Android.',
+      provider: {
+        '@type': 'Organization',
+        name: siteConfig.name,
+      },
+      areaServed: {
+        '@type': 'Country',
+        name: 'India',
+      },
+    },
+    {
+      '@type': 'Service',
+      '@id': `${siteConfig.url}/services#ui-ux-design`,
+      name: 'UI/UX Design',
+      description: 'User-centered design solutions that enhance user experience and engagement.',
+      provider: {
+        '@type': 'Organization',
+        name: siteConfig.name,
+      },
+      areaServed: {
+        '@type': 'Country',
+        name: 'India',
+      },
+    },
+  ],
+};
 
 const services = [
 	{
@@ -266,6 +318,11 @@ export default function ServicesPage() {
 					</motion.div>
 				</div>
 			</section>
+
+			{/* Structured Data Script */}
+			<Script id="services-schema" type="application/ld+json">
+				{JSON.stringify(servicesSchema)}
+			</Script>
 		</main>
 	);
 }

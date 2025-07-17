@@ -7,12 +7,19 @@ import TeamSection from "@/components/team-section";
 import ContactSection from "@/components/contact-section";
 import FeedbackSection from "@/components/feedback-section";
 
+import { pagesMetadata } from '@/lib/metadata';
+
 export const metadata: Metadata = {
-  title: 'Codemates LTD | Innovative Digital Solutions',
-  description: 'Transform your business with cutting-edge web development, data analysis, machine learning, and UI/UX design solutions from Codemates LTD.',
+  title: pagesMetadata.home.title,
+  description: pagesMetadata.home.description,
+  alternates: {
+    canonical: '/',
+  },
   openGraph: {
-    title: 'Codemates LTD | Innovative Digital Solutions',
-    description: 'Transform your business with cutting-edge web development, data analysis, machine learning, and UI/UX design solutions.',
+    title: pagesMetadata.home.title,
+    description: pagesMetadata.home.description,
+    url: '/',
+    type: 'website',
     images: [
       {
         url: '/og-image.jpg',
